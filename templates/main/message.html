@@ -1,0 +1,12 @@
+{% extends "main_template.html" %}
+
+{% block title %}
+System Message
+{% end %}
+
+{% block content %}
+    <div id="message-container">
+        {% raw MESSAGE %}
+        {% module ReturnButton() %}
+    </div>
+{% end %}

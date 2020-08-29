@@ -1,0 +1,253 @@
+/*=============================================================================*/
+/* Technical Styles: Applied to whole page, used as very basic building block. */
+/*=============================================================================*/
+
+html {
+    margin: 0px;
+    padding: 0px;
+
+    /* I suggest DejaVu Sans Mono :3 */
+    font-family: monospace;
+    font-size: 12px;
+}
+
+html * {
+    list-style: square;
+    color: inherit;
+}
+
+body {
+    display: flex;
+    flex-flow: column nowrap;
+
+    margin: auto;
+    padding: inherit;
+
+    max-width: 800px;
+}
+
+hr {
+    border-style: dashed;
+}
+
+/*======================*/
+/* EOF Technical Styles */
+/*======================*/
+
+
+/*==================================================================*/
+/* Core Styles: This is where the majority of main styles will live */
+/*==================================================================*/
+
+#header {
+    height: 100px;
+}
+
+#logobox {
+    margin-top: 35px;
+    margin-left: 25px;
+
+    font-size: 20px;
+}
+
+/* Login box */
+
+#loginbox {
+    margin-top: 20px;
+    margin-right: 25px;
+}
+
+#lbox_fields input {
+    font-size: inherit;
+}
+
+#lbox_controls input {
+    margin-top: 3px;
+}
+
+/* EOF Login box */
+
+#profilebox {
+    margin-top: 43px;
+    margin-right: 25px;
+}
+
+/* Content pane */
+
+#left-pane,
+#right-pane {
+    min-width: 120px;
+}
+
+#left-pane {
+    justify-content: flex-end;
+}
+
+#linkbox-left {
+    margin-top: 20px;
+}
+
+#linkbox-left a {
+    margin-bottom: 5px;
+}
+
+#middle-pane {
+    min-width: 700px;
+}
+
+#right-pane {
+    justify-content: flex-start;
+}
+
+#content {
+    overflow: auto;
+
+    word-wrap: break-word;
+
+    font-size: 15px;
+}
+
+#message-container {
+    margin-top: 35px;
+    margin-bottom: 35px;
+
+    min-height: 600px;
+
+    font-size: 18px;
+}
+
+#message-body h3 {
+    margin-left: 35px;
+    margin-right: 35px;
+}
+
+/* EOF Content pane */
+
+.border-vertical {
+    min-width: 50px;
+}
+
+#footer {
+    padding-top: 22px;
+}
+
+/*=================*/
+/* EOF Core Styles */
+/*=================*/
+
+
+/*===============*/
+/* Shared Styles */
+/*===============*/
+
+#profilebox *,
+#registration_form *,
+#lbox_fields input,
+#lbox_controls input {
+    color: black;
+    background-color: white;
+}
+
+#header,
+#main-container,
+#left-pane,
+#right-pane,
+#middle-pane,
+#message-container,
+#linkbox-left {
+    display: flex;
+}
+
+#header,
+#main-container,
+#left-pane,
+#right-pane {
+    flex-flow: row nowrap;
+}
+
+#header,
+#main-container {
+    justify-content: center;
+}
+
+#logobox,
+#loginbox,
+#profilebox,
+#content,
+#message-body {
+    flex: auto;
+}
+
+#logobox,
+#loginbox,
+#profilebox,
+#linkbox-left a,
+#content a,
+#registration_form {
+    font-weight: bold;
+}
+
+#loginbox,
+#profilebox,
+#linkbox-left a {
+    text-align: right;
+}
+
+#lbox_fields input,
+#regform_fields input {
+    border-color: black;
+    border-style: dashed;
+}
+
+#lbox_controls input,
+#regform_controls input {
+    cursor: pointer;
+    border: none;
+
+    font: inherit;
+    text-decoration: underline;
+}
+
+#linkbox-left,
+#message-container,
+#middle-pane {
+    flex-flow: column nowrap;
+}
+
+#content,
+#message-container,
+#registration_form,
+#footer {
+    text-align: center;
+}
+
+/* Ouch, ouch, ouch! This smells of a dirty hack. FIXME! */
+#lbox_fields > input:nth-child(3),
+#regform_fields > input:nth-child(3) {
+    margin-top: 5px
+}
+
+/*===================*/
+/* EOF Shared Styles */
+/*===================*/
+
+
+/*=====================================*/
+/* Modules: Different reusable widgets */
+/*=====================================*/
+
+.just {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+}
+
+/* News */
+
+/* TODO: Yup, need to finish designing these. */
+
+/* EOF News */
+
+/*=============*/
+/* EOF Modules */
+/*=============*/

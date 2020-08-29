@@ -1,0 +1,9 @@
+<div id="news">
+{% for entry in entries %}
+    <div class="news-entry">
+        <div class="news-entry-header">{{ entry['header'] }}</div>
+        <div class="news-entry-timestamp">{{ entry['timestamp'] }}</div>
+        <div class="news-entry-text">{{ entry['text'] }}</div>
+    </div>
+{% end %}
+</div>

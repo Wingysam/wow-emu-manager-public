@@ -1,0 +1,11 @@
+# Files listed here are specific for each install,
+# some are of private nature so you should _never_ share them:
+
+config.json
+internal.db
+
+certs/
+__pycache__/
+
+# Very secret folder where Snekki magic happens :3
+workfiles/

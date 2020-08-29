@@ -1,0 +1,3 @@
+{% for k,v in pages.items() %}
+    <a href="{{ reverse_url('/') + k }}">{{ v }}</a>
+{% end %}

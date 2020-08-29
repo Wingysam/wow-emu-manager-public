@@ -1,0 +1,38 @@
+{% extends "main_template.html" %}
+
+{% block title %}
+Frontpage
+{% end %}
+
+{% block content %}
+    <!-- This is where content part of HTML template begins -->
+    <h1><a target="_blank" href="https://github.com/Levitanious/wow-emu-manager">WoW-Emu-Manager:</a></h1>
+    <h3>[ A CMaNGOS web UI written in Python 3 and Tornado ]</h3>
+    <hr>
+    <div class="just">
+        <h4># Requirements:</h4>
+        <ul>
+            <li><a target="_blank" href="https:/www.python.org/">Python 3</a></li>
+            <li><a target="_blank" href="http://www.tornadoweb.org/en/stable/index.html">Tornado</a></li>
+            <li><a target="_blank" href="https://pypi.org/project/mysql-connector-python/">MySQL-Connector-Python</a></li>
+        </ul>
+        <h4># About:</h4>
+        <p>Simple, nostalgic-looking layer between players, you and server’s database written in Python 3 and Tornado.</p>
+        <p>Documentation on usage or contribution can be found <a target="_blank" href="https://github.com/Levitanious/wow-emu-manager/wiki">here</a>.</p>
+        <h4># Features:</h4>
+        <ul>
+            <li>Supports <a target="_blank" href="https://github.com/cmangos">CMaNGOS</a>-TBC</li>
+            <li>Simple to configure, easy to shape templates for your needs</li>
+            <li>Account creation / Management facilities</li>
+        </ul>
+        <h4># Planned:</h4>
+        <ul>
+            <li>Server admin panel</li>
+            <li>News module</li>
+            <li>Armory</li>
+            <li>Item / Quest / NPC / Zone DB</li>
+            <li>Realm map</li>
+        </ul>
+    </div>
+    <!-- This is where content part of the template ends -->
+{% end %}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- WHAT IS THIS GRAND LARCE-.. [𓆙] SSSSSORCERY! -->
+<html>
+    <!-- YES, YOUR EYES AREN'T SUDDENLY GETTING STRUCK BY A NUCLEAR EXPLOSION - IT'S...
+    ACADEMIC STYLE. WELCOME TO THE 2001 BUT WITH BETTER FONTS.
+    BECAUSE EVERYTHING NEW IS JUST SOMETHING VERY OLD AND FORGOTTEN. -->
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0"/>
+
+        <title>{{ DATA['PAGE_TITLE'] }} | {% block title %}{% end %}</title>
+
+        <!-- I expect it to produce cache-related bugs in future! Cheers! -->
+        <link rel="stylesheet" href="
+        {% if DATA['BASE_PATH'] == '/' %}
+            {{ static_url('main.css') }}
+        {% else %}
+            {{ DATA['BASE_PATH'] + 'static/main.css' }}
+        {% end %}
+        "/>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logobox">
+                <a href="{{ DATA['BASE_PATH'] }}">
+                    {{ DATA['PAGE_TITLE'] }}
+                </a>
+            </div>
+            <!-- Y-you wanna buy a... FUNGAL CAKE? -->
+            {% if ( DATA['USERNAME'] ) %}
+            <div id="profilebox">
+                User: <a href="{{ DATA['BASE_PATH'] + 'profile' }}">[{{ DATA['USERNAME']}}]</a>
+                <a href="{{ DATA['BASE_PATH'] + 'logout' }}">[LOGOUT]</a>
+            </div>
+            <!-- GET IT OUT, GET IT OOOOOUT! -->
+            {% else %}
+            <form action="{{ DATA['BASE_PATH'] + 'login' }}" method="POST" id="loginbox">
+                <div id="lbox_fields">
+                    Login: <input name="l" size="14" maxlength="16" type="text"/>
+                    <br/>
+                    Password: <input name="p" size="14" maxlength="16" type="password"/>
+                    {% module xsrf_form_html() %}
+                </div>
+                <div id="lbox_controls">
+                    <!-- Oh yeah, i know that's a hack. But why do you care?
+                    Check out main.css, #profilebox input rule to figure this out. -->
+                    <input type="submit" value="[LOGIN]"/>
+                    <a href="{{ DATA['BASE_PATH'] + 'register' }}">[REGISTER]</a>
+                </div>
+            </form>
+            <!-- BUY ONE! -->
+            {% end %}
+            </div>
+        </div>
+        <div id="main-container">
+            <div id="left-pane">
+                <div id="linkbox-left">
+                    {% module SideNavMenu() %}
+                </div>
+            </div>
+            <div class="border-vertical"></div>
+            <div id="middle-pane">
+                <div id="content">
+                    {% block content %}
+                    {% end %}
+                </div>
+                <div id="footer">
+                    {% block footer %}
+                    {% end %}
+                </div>
+            </div>
+            <div class="border-vertical"></div>
+            <!-- Unused yet, for these scary times when i'll need a second panel. -->
+            <div id="right-pane"></div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,34 @@
+{% extends "main_template.html" %}
+
+{% block title %}
+Registration
+{% end %}
+
+{% block content %}
+    <div id="message-container">
+        <div id="message-header">
+            <h1>Create New Account</h1>
+        </div>
+        <div id="message-body">
+            <h3>Registration guidelines:</h3>
+            <ul class="just">
+                <li>Username / password must not exceed 16 characters (TBC client limitation)</li>
+                <li>Username may consist of alphanumeric characters and numbers only</li>
+            </ul>
+            </br>
+            <form action="{{ DATA['BASE_PATH'] + 'register' }}" method="POST" id="registration_form">
+                <p id="regform_fields">
+                    <!-- If you think it's "enforced" just via input field... -->
+                    Username: <input type="text" maxlength="16" name="l"/>
+                    <br/>
+                    Password: <input type="password" maxlength="16" name="p"/>
+                    {% module xsrf_form_html() %}
+                </p>
+                <p id="regform_controls">
+                    <input type="submit" value="[REGISTER]"/>
+                </p>
+            </form>
+        </div>
+        {% module ReturnButton() %}
+    </div>
+{% end %}

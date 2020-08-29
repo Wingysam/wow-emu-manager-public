@@ -1,0 +1,17 @@
+{% extends "main_template.html" %}
+
+{% block title %}
+News
+{% end %}
+
+{% block content %}
+<div id="message-container">
+    <div id="message-header">
+        <h1>News</h1>
+    </div>
+    <div id="message-body">
+        {% module FormatNews(DATA['news']) %}
+    </div>
+    {% module ReturnButton() %}
+</div>
+{% end %}
