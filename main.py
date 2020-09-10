@@ -3,12 +3,16 @@
 # WoW-Emu-Manager: A CMaNGOS management Web UI, written in Python.
 """This file: Site engine."""
 
-# --- FIXME: Let's be optimistic! Py3.4 it is, until feedback arrives.
+
+# Let's be optimistic!... and so i was, back then. And it worked.
+#
+# But it's 2020 now. Repology says Py3.6 is the default on Ubuntu 18.04,
+#   the LTS release at the time of writing, and this is what i'm going to use as baseline.
 from sys import version_info as py_version
 
-if py_version < (3, 4):
-    exit("This program requires Python 3.4+ to run -- quitting.")
-# --- EoFIXME
+if py_version < (3, 6):
+    exit("== This program requires Python 3.6+ to run, please update. Quitting... ==")
+
 
 #~# Standard Py3 Libs #~#
 
