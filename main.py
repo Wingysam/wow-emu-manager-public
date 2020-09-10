@@ -36,6 +36,14 @@ import tornado.httpclient
 import mysql.connector as mariadb
 
 #~# Our own python modules #~#
+from handlers import *
+
+from handlers.auth import *
+from handlers.registration import *
+from handlers.profile import *
+from handlers.index import *
+from handlers.news import *
+
 from ui_modules.core import *
 from ui_modules.news import *
 
@@ -276,14 +284,15 @@ def main():
 
     # Make an instance of web app and connect
     # some handlers to respective URL path regexps
-    routes = [ (base_path, IndexHandler, None, "/"),
+    index_cfg = { "config": CONFIG }
+    routes = [ (base_path, IndexHandler, index_cfg, "/"),
                (base_path + r"static/(.*)", tornado.web.StaticFileHandler, { "path": "static/" + CONFIG['SITENAME'] } ),
-               (base_path + r"shutdown", ShutdownHandler),
-               (base_path + r"login", LoginHandler),
-               (base_path + r"logout", LogoutHandler),
-               (base_path + r"register", RegistrationHandler),
-               (base_path + r"profile", ProfileHandler),
-               (base_path + r"news", NewsHandler) ]
+               (base_path + r"shutdown", ShutdownHandler, index_cfg),
+               (base_path + r"login", LoginHandler, index_cfg),
+               (base_path + r"logout", LogoutHandler, index_cfg),
+               (base_path + r"register", RegistrationHandler, index_cfg),
+               (base_path + r"profile", ProfileHandler, index_cfg),
+               (base_path + r"news", NewsHandler, index_cfg) ]
 
     site = tornado.web.Application(handlers=routes, **settings)
 
@@ -323,250 +332,6 @@ def main():
 ######################
 # EOF Core Machinery #
 ######################
-
-
-#########################################
-# Handlers: These handle page requests. #
-#########################################
-
-
-class IndexHandler(tornado.web.RequestHandler):
-    """Root page handler, it's what other handlers in here will inherit from."""
-
-    #####################################################################
-    # Below are "helper" methods that doesn't directly render anything. #
-    #####################################################################
-
-    def initialize(self):
-        """Allow you to __init__ everything you need for your subclass."""
-        self.DATA = {}
-        self.DATA['PAGE_TITLE'] = CONFIG['PAGE_TITLE']
-        self.DATA['BASE_PATH'] = CONFIG['BASE_PATH']
-
-        # Check the user-cookie for active login and reject it in case
-        # there are any special characters in it.
-        if (self.current_user):
-            if ( self.current_user.isalnum() ):
-                self.DATA['USERNAME'] = tornado.escape.xhtml_escape(self.current_user)
-        else:
-            self.DATA['USERNAME'] = None
-
-    def get_current_user(self):
-        """Get username from secure cookie."""
-        return self.get_secure_cookie("username")
-
-    def get_credientals(self):
-        """Grabs field data from forms.
-
-        If it won't like any of the fields user will see an error message
-        via send_message() and the function will return None, so handle it.
-        """
-        login_field = self.get_argument("l").upper()
-        psswd_field = self.get_argument("p").upper()
-
-        login_err = False
-
-        # If username contains special characters...
-        if ( not login_field.isalnum() ):
-            login_err = True
-
-        # If username or password are empty...
-        if (not login_field or not psswd_field):
-            login_err = True
-
-        # If password is longer than...
-        if (len(psswd_field) > 16):
-            login_err = True
-
-        # If username is longer than...
-        if (len(login_field) > 16):
-            login_err = True
-
-        # If we don't like the credientals:
-        if (login_err):
-            return None
-
-        # Calculate SHA1 of user:pass
-        psswd_dough = login_field + ":" + psswd_field
-        psswd_hash = hashlib.sha1( bytes(psswd_dough, "utf-8") ).hexdigest().upper()
-
-        return { 'login': login_field, 'hash': psswd_hash, 'pass': psswd_field }
-
-    def check_perm(self):
-        """Return level of permissions for an account."""
-        # We've already checked this for XSS. (In fact we do it _every_ time you get the page)
-        # ...so now we are limiting SQLinj. This makes sense here, because account
-        # creation rules are exactly similar, anyway.
-
-        query = "SELECT `gmlevel` FROM `account` \
-                 WHERE `username` = '{}'".format( self.DATA['USERNAME'] )
-
-        return reach_db("realmd", query, "fetchone")['gmlevel']
-
-    ###############################################
-    # Below are things that directly render stuff #
-    ###############################################
-
-    def send_message(self, msg_handler):
-        """Send a message wrapped in a nice template to the user."""
-
-        msg_string = self.render_string( "messages/{}.html".format(msg_handler) )
-
-        self.render("message.html", DATA=self.DATA, MESSAGE=msg_string)
-
-    def get(self):
-        """Process GET request from clients."""
-        #self.DATA['news'] = get_news(3)
-        self.render("index.html", DATA=self.DATA)
-
-
-class DefaultHandler(IndexHandler):
-    """Handle all other requests (the ones that don't have a unique handler)."""
-
-    def get(self):
-        self.send_message('404')
-
-
-class LoginHandler(IndexHandler):
-
-    def post(self):
-        if ( CONFIG['LOGIN_DISABLED'] ):
-            self.send_message('login_err')
-            return
-
-        if ( self.DATA['USERNAME'] ):
-            self.redirect( self.DATA['BASE_PATH'] )
-            return
-
-        logindata = self.get_credientals()
-
-        if (not logindata):
-            self.send_message('login_err')
-            return
-
-        query = "SELECT `username` FROM `account` \
-                 WHERE `username` = '{0}' AND `sha_pass_hash` = '{1}' \
-                 ".format(logindata['login'], logindata['hash'])
-
-        result = reach_db("realmd", query, "fetchone")
-
-        # Idea is that our query will be empty if it won't find an account+hash
-        # pair, while Tornado handles all escaping
-        if (result):
-            self.set_secure_cookie("username", logindata['login'])
-        else:
-            self.send_message('login_err')
-            return
-
-        self.redirect( self.DATA['BASE_PATH'] )
-
-
-class LogoutHandler(IndexHandler):
-
-    def get(self):
-        if( self.DATA['USERNAME'] ):
-            self.clear_cookie("username")
-
-        self.redirect( self.DATA['BASE_PATH'] )
-
-
-class RegistrationHandler(IndexHandler):
-
-    def get(self):
-        if ( self.DATA['USERNAME'] ):
-            self.redirect( self.DATA['BASE_PATH'] )
-        elif ( CONFIG['REG_DISABLED'] ):
-            self.send_message('reg_dis')
-        else:
-            self.render("register.html", DATA=self.DATA)
-
-    def post(self):
-        if ( CONFIG['REG_DISABLED'] ):
-            self.send_message('reg_dis')
-            return
-
-        if ( not self.DATA['USERNAME'] ):
-            regdata = self.get_credientals()
-
-            # Same as with LoginHandler
-            if (not regdata):
-                self.send_message('reg_err')
-                return
-
-            # Check if account exists
-            query = "SELECT `username` FROM `account` \
-                     WHERE `username` = '{}'".format(regdata['login'])
-
-            result = reach_db("realmd", query, "fetchone")
-
-            if (result):
-                self.send_message('reg_err')
-                return
-
-            # Register new account
-            query = "INSERT INTO `account` (`username`, `sha_pass_hash`, `expansion`) \
-                     VALUES ('{0}', '{1}', '{2}') \
-            ".format( regdata['login'], regdata['hash'], CONFIG['DEFAULT_ADDON'] )
-
-            reach_db("realmd", query, "fetchone")
-
-            self.send_message('reg_ok')
-
-        else:
-            self.redirect( self.DATA['BASE_PATH'] )
-
-
-class ProfileHandler(IndexHandler):
-
-    def get(self):
-        if ( self.DATA['USERNAME'] ):
-            self.send_message('404')
-        else:
-            self.redirect( self.DATA['BASE_PATH'] )
-
-
-class NewsHandler(IndexHandler):
-    """Fetch news entries and render them for user."""
-
-    def get(self):
-        self.DATA['news'] = get_news(15)
-
-        self.render("news.html", DATA=self.DATA)
-
-
-class ShutdownHandler(IndexHandler):
-    """Handle shutdown command from web interface."""
-
-    def get(self):
-        if ( not self.DATA['USERNAME'] ):
-            print( MSG_SYS['info_forbidden'] )
-        elif ( self.check_perm() == 3 ):
-            self.redirect("https://github.com/cmangos/")
-            safe_exit( MSG_SYS['info_exit'] )
-            return
-
-        self.redirect( self.DATA['BASE_PATH'] )
-
-
-class HTTPSRedirectHandler(tornado.web.RequestHandler):
-    """Handle HTTP -> HTTPS redirects."""
-
-    def get(self):
-        # FIXME: Can this part be abused?
-        request = self.request.host
-        if (':' in request):
-            # Take the IP part only
-            request = request.rsplit(":", 1)[0]
-
-        if ( CONFIG['HTTPS_PORT'] != "443" ):
-            request += ":" + CONFIG['HTTPS_PORT']
-
-        self.redirect('https://' + request, permanent=False)
-
-
-################
-# EOF Handlers #
-################
 
 
 if __name__ == "__main__":  # Make sure we aren't being used as someone's module!
