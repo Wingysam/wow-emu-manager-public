@@ -35,6 +35,10 @@ import tornado.httpclient
 
 import mysql.connector as mariadb
 
+#~# Our own python modules #~#
+from ui_modules.core import *
+from ui_modules.news import *
+
 
 ###########
 # Globals #
@@ -563,37 +567,6 @@ class HTTPSRedirectHandler(tornado.web.RequestHandler):
 ################
 # EOF Handlers #
 ################
-
-
-#####################################################################
-# Modules: Embeddable widgets of stuff with flexible functionality. #
-#####################################################################
-
-class FormatNews(tornado.web.UIModule):
-    """Render news entry in a unified way."""
-
-    def render(self, entries):
-        return self.render_string("module-news.html", entries=entries)
-
-
-class ReturnButton(tornado.web.UIModule):
-    """Friggin return button. Friggin automagical."""
-
-    def render(self):
-        return self.render_string("module-return.html")
-
-
-class SideNavMenu(tornado.web.UIModule):
-    """Render navigation menu from list of pages"""
-
-    def render(self):
-        pages = { "news": "News" }
-        return self.render_string("module-sidemenu.html", pages=pages)
-
-
-###############
-# EOF Modules #
-###############
 
 
 if __name__ == "__main__":  # Make sure we aren't being used as someone's module!
