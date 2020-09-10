@@ -47,7 +47,7 @@ from ui_modules.core import *
 from ui_modules.news import *
 
 
-def main():
+def Entrypoint():
     """Grab command line arguments, prepare environment and run the engine."""
     tornado.options.parse_command_line()
 
@@ -130,4 +130,4 @@ if __name__ == "__main__":  # Make sure we aren't being used as someone's module
     # This closes DB connections at the end on it's own!
     #with call_db() as conn_bundle:
     #    init_internal_db() # FIXME: News Module, not yet.
-    main()
+    Entrypoint()
