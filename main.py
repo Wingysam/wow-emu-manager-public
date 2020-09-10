@@ -28,6 +28,8 @@ import tornado.httpserver
 import tornado.httpclient
 
 #~# Our own python modules #~#
+import ui_modules
+
 # FIXME: Get rid of as many from-imports as you can,
 #        namespaces are one honking great idea -- let's use more of those!
 from core_utils import *
@@ -41,20 +43,10 @@ from handlers.profile import *
 from handlers.index import *
 from handlers.news import *
 
-# TODO: This is no longer has to be imported like this,
-#       just import it and pass through settings
-from ui_modules.core import *
-from ui_modules.news import *
-
 
 def Entrypoint():
     """Grab command line arguments, prepare environment and run the engine."""
     tornado.options.parse_command_line()
-
-    # Dictionary of all modules used
-    modules = { 'FormatNews': FormatNews,
-                'ReturnButton': ReturnButton,
-                'SideNavMenu': SideNavMenu }
 
     # Change this in configs if you're hosting behind some kind of proxy (nginx!)
     base_path = CONFIG['BASE_PATH']
@@ -67,7 +59,7 @@ def Entrypoint():
                  'cookie_secret': CONFIG['SECRET'],
                  'xsrf_cookies': True,
                  'autoreload': False,
-                 'ui_modules': modules,  # TODO: Just give it ui_modules, instead
+                 'ui_modules': ui_modules,
                  'default_handler_class': DefaultHandler,
                  'default_handler_args': index_cfg,
                  'compiled_template_cache': True }
