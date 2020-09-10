@@ -49,9 +49,10 @@ def Entrypoint():
     tornado.options.parse_command_line()
 
     # Change this in configs if you're hosting behind some kind of proxy (nginx!)
-    base_path = CONFIG['BASE_PATH']
+    base_path = CONFIG['BASE_PATH'] or '/'
 
     index_cfg = { "config": CONFIG, "system_messages": MSG_SYS }
+    static_cfg = { "path": "static/" + CONFIG['SITENAME'] }
 
     # Tornado webserver settings
     settings = { 'template_path': "templates/" + CONFIG['SITENAME'],
@@ -71,15 +72,16 @@ def Entrypoint():
         settings['autoreload'] = True
 
     # Make an instance of web app and connect
-    # some handlers to respective URL path regexps
-    routes = [ (base_path, IndexHandler, index_cfg, "/"),
-               (base_path + r"static/(.*)", tornado.web.StaticFileHandler, { "path": "static/" + CONFIG['SITENAME'] } ),
-               (base_path + r"shutdown", ShutdownHandler, index_cfg),
-               (base_path + r"login", LoginHandler, index_cfg),
-               (base_path + r"logout", LogoutHandler, index_cfg),
-               (base_path + r"register", RegistrationHandler, index_cfg),
-               (base_path + r"profile", ProfileHandler, index_cfg),
-               (base_path + r"news", NewsHandler, index_cfg) ]
+    # some handlers to respective URL path regexps.
+    # ...just btw... f + r is a thing, HOLY SNEKKS!
+    routes = [ (fr'{base_path}', IndexHandler, index_cfg, "/"),
+               (fr'{base_path}static/(.*)', tornado.web.StaticFileHandler, static_cfg),
+               (fr'{base_path}shutdown', ShutdownHandler, index_cfg),
+               (fr'{base_path}login', LoginHandler, index_cfg),
+               (fr'{base_path}logout', LogoutHandler, index_cfg),
+               (fr'{base_path}register', RegistrationHandler, index_cfg),
+               (fr'{base_path}profile', ProfileHandler, index_cfg),
+               (fr'{base_path}news', NewsHandler, index_cfg) ]
 
     site = tornado.web.Application(handlers=routes, **settings)
 
