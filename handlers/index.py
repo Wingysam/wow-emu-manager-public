@@ -14,9 +14,10 @@ class IndexHandler(RequestHandler):
     # Below are "helper" methods that doesn't directly render anything. #
     #####################################################################
 
-    def initialize(self, config):
+    def initialize(self, config, system_messages):
         """Allow you to __init__ everything you need for your subclass."""
         self.DATA = config
+        self.MSG_SYS = system_messages
         # Check the user-cookie for active login and reject it in case
         # there are any special characters in it.
         if (self.current_user):
