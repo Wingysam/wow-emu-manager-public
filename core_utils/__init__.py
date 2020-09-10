@@ -3,6 +3,8 @@
 #~# Standard Py3 Libs #~#
 import json
 
+from os import urandom as rnd
+
 #~# Dependencies #~#
 import tornado.ioloop
 

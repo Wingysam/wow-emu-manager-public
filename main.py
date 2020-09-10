@@ -15,9 +15,6 @@ if py_version < (3, 6):
 
 
 #~# Standard Py3 Libs #~#
-import ssl
-
-from os import urandom as rnd
 
 #~# Dependencies #~#
 import tornado.ioloop
@@ -84,32 +81,6 @@ def Entrypoint():
                (fr'{base_path}news', NewsHandler, index_cfg) ]
 
     site = tornado.web.Application(handlers=routes, **settings)
-
-    if ( CONFIG['HTTPS'] ):
-        # Prepare SSL
-        ssl_context = ssl.SSLContext()
-
-        # Attempt to load SSL certificate and key
-        try:
-            ssl_context.load_cert_chain("certs/fullchain.pem", "certs/privkey.pem")
-
-        except ssl.SSLError:
-            safe_exit( MSG_SYS['err_ssl_context'] )
-            return
-
-        except FileNotFoundError:
-            safe_exit( MSG_SYS['err_ssl_cert'] )
-            return
-
-        https_server = tornado.httpserver.HTTPServer(site, ssl_options=ssl_context)
-        https_server.listen( CONFIG['HTTPS_PORT'] )
-
-    else:
-        https_server = None
-
-    # Spawn HTTP -> HTTPS redirect handler
-    if (https_server):
-        site = tornado.web.Application( handlers=[ (r"/.*", HTTPSRedirectHandler) ] )
 
     http_server = tornado.httpserver.HTTPServer(site)
     http_server.listen( CONFIG['SITE_PORT'] )

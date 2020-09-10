@@ -7,22 +7,6 @@ import tornado.web
 from . index import IndexHandler
 
 
-class HTTPSRedirectHandler(tornado.web.RequestHandler):
-    """Handle HTTP -> HTTPS redirects."""
-
-    def get(self):
-        # FIXME: Can this part be abused?
-        request = self.request.host
-        if (':' in request):
-            # Take the IP part only
-            request = request.rsplit(":", 1)[0]
-
-        if ( CONFIG['HTTPS_PORT'] != "443" ):
-            request += ":" + CONFIG['HTTPS_PORT']
-
-        self.redirect('https://' + request, permanent=False)
-
-
 class DefaultHandler(IndexHandler):
     """Handle all other requests (the ones that don't have a unique handler)."""
 
