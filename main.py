@@ -412,7 +412,7 @@ class IndexHandler(tornado.web.RequestHandler):
 
     def get(self):
         """Process GET request from clients."""
-        self.DATA['news'] = get_news(3)
+        #self.DATA['news'] = get_news(3)
         self.render("index.html", DATA=self.DATA)
 
 
@@ -600,6 +600,6 @@ if __name__ == "__main__":  # Make sure we aren't being used as someone's module
     CONFIG = get_config()
 
     # This closes DB connections at the end on it's own!
-    with call_db() as conn_bundle:
-        init_internal_db() # FIXME: News Module, not yet.
-        main()
+    #with call_db() as conn_bundle:
+    #    init_internal_db() # FIXME: News Module, not yet.
+    main()
