@@ -50,7 +50,7 @@ Happy hunting!
 
 #### # Screenshots:
 
-- Soon™
+![Screenshot](https://i.imgur.com/fExFEoM.png)
 
 
 <!-- Technical stuff -->
