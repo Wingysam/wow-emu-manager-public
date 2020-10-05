@@ -4,6 +4,7 @@
 import json
 
 from os import urandom as rnd
+from os import environ
 
 #~# Dependencies #~#
 import tornado.ioloop
@@ -45,6 +46,10 @@ def safe_exit(msg, turn_off_tornado=True):
 
 
 def get_config():
+    filename = "config.json"
+    filename_from_env = environ['CONFIG']
+    if filename_from_env:
+        filename = filename_from_env
     """Grab config file and return it as python object.
 
     Load config.json from current folder,
@@ -54,12 +59,12 @@ def get_config():
     # For me it's an elegant way to avoid additional import.
     try:
         # If config.json exists -- open it for read access
-        with open("config.json", mode="r", encoding="utf8") as config_file:
+        with open(filename, mode="r", encoding="utf8") as config_file:
             # Decode JSON into Python ojbects
             local_CONFIG = json.loads( config_file.read() )
 
     except OSError:  # ...if we cannot open file for one reason or another -- write a new one.
-        with open("config.json", mode="w", encoding="utf8") as config_file:
+        with open(filename, mode="w", encoding="utf8") as config_file:
             # TODO: Rework config format into sectioned JSON.
             local_CONFIG = {  # Prepare the default config
                 "SITENAME": "main",

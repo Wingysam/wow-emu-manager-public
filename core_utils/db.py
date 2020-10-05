@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 #~# Dependencies #~#
 import sqlite3
-import mysql.connector as mariadb
+#import mysql.connector as mariadb
 
 
 def get_news(amount):
